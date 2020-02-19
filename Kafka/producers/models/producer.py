@@ -51,30 +51,30 @@ class Producer:
     def create_topic(self):
         """Creates the producer topic if it does not already exist"""
         client = AdminClient({"bootstrap.servers": BROKER_URL})
-        futures = client.create_topics(
-            [NewTopic(
-                topic=self.topic_name,
-                num_partitions=self.num_partitions,
-                replication_factor=self.num_replicas
-                )]
-        )
-        for _, future in futures.items():
-            try:
-                future.results()
-            except Exception as e:
-                logger.info("topic creation kafka integration incomplete - skipping")
+        topics, _ = client.list_topics()
+        if self.topic_name not in topics:
+            futures = client.create_topics(
+                [NewTopic(
+                    topic=self.topic_name,
+                    num_partitions=self.num_partitions,
+                    replication_factor=self.num_replicas
+                    )]
+            )
+            for _, future in futures.items():
+                try:
+                    future.results()
+                except Exception as e:
+                    logger.info(e)
+        else:
+            logger.info(f"{self.topic_name} is already exist on broker...")
 
     def time_millis(self):
         return int(round(time.time() * 1000))
 
     def close(self):
         """Prepares the producer for exit by cleaning up the producer"""
-        #
-        #
-        # TODO: Write cleanup code for the Producer here
-        #
-        #
-        logger.info("producer close incomplete - skipping")
+        self.producer.flush()
+        logger.info("cleaning up producer...")
 
     def time_millis(self):
         """Use this function to get the key for Kafka Events"""
