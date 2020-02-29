@@ -18,7 +18,7 @@ CREATE TABLE turnstile (
     station_name VARCHAR,
     line VARCHAR
 ) WITH (
-    KAFKA_TOPIC='com.udacity.com.udacity.optimizing_public_transport.stations.turnstiles",
+    KAFKA_TOPIC='com.udacity.com.udacity.stations.turnstiles",
     VALUE_FORMAT='JSON',
     KEY='station_id'
 );
