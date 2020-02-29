@@ -31,7 +31,7 @@ class Weather(Producer):
 
     def __init__(self, month):
         super().__init__(
-            "com.udacity.optimizing_public_transport.stations..weather",
+            topic_name="com.udacity.stations.weather",
             key_schema=Weather.key_schema,
             value_schema=Weather.value_schema,
             num_partitions=5,

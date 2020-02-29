@@ -28,7 +28,7 @@ class Turnstile(Producer):
         )
 
         super().__init__(
-            f"com.udacity.optimizing_public_transport.stations.{station.station_name}.turnstiles",
+            topic_name="com.udacity.stations.turnstiles",
             key_schema=Turnstile.key_schema,
             value_schema=Turnstile.value_schema,
             num_partitions=5,
