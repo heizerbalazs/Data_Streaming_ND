@@ -1,6 +1,6 @@
 # How did changing values on the SparkSession property parameters affect the throughput and latency of the data?
 
-I measured the performance based on inputRowsPerSecond and processedRowsPerSecond.
+I measured the performance based on inputRowsPerSecond and processedRowsPerSecond metrics. Based on the definition of this metrics throughput and latency can be calculated in the following ways:
 
 `throughput = processedRowsPerSecond [1/s]`
 
