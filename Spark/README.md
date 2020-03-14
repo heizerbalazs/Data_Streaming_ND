@@ -10,5 +10,15 @@ I found that increasing the `parallelism` will decrease the latency, but it does
 
 ![parallelism](./pictures/parallelism.PNG)
 
+Changing the number of partitions has a positive effect on the latency up to a point, but choosing too high value can make things worst.
+This parameter has similar effect on the throughput.
+
+![parallelism](./pictures/partitions.PNG)
+
 # What were the 2-3 most efficient SparkSession property key/value pairs? Through testing multiple variations on values, how can you tell these were the most optimal?
 
+Based on my experiment I used the following parameters:
+
+``
+
+``
