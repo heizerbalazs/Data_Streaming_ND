@@ -17,7 +17,7 @@ This parameter has similar effect on the throughput.
 
 # What were the 2-3 most efficient SparkSession property key/value pairs? Through testing multiple variations on values, how can you tell these were the most optimal?
 
-Based on my experiment I used the following parameters:
+Based on my experiments, I used the following parameters:
 
 `"spark.default.parallelism": 6`
 
