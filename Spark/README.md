@@ -19,6 +19,6 @@ This parameter has similar effect on the throughput.
 
 Based on my experiment I used the following parameters:
 
-``
+`"spark.default.parallelism": 6`
 
-``
+`"spark.sql.shuffle.partitions": 2`
