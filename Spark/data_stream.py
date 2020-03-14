@@ -7,18 +7,18 @@ import pyspark.sql.functions as psf
 
 # TODO Create a schema for incoming resources
 schema = StructType([
-    StructField("crime_id", StringType(), True),
+    StructField("crime_id", LongType(), True),
     StructField("original_crime_type_name", StringType(), True),
-    StructField("report_date", StringType(), True),
-    StructField("call_date", StringType(), True),
-    StructField("offense_date", StringType(), True),
+    StructField("report_date", TimestampType(), True),
+    StructField("call_date", TimestampType(), True),
+    StructField("offense_date", TimestampType(), True),
     StructField("call_time", StringType(), True),
-    StructField("call_date_time", StringType(), True),
+    StructField("call_date_time", TimestampType(), True),
     StructField("disposition", StringType(), True),
     StructField("address", StringType(), True),
     StructField("city", StringType(), True),
     StructField("state", StringType(), True),
-    StructField("agency_id", StringType(), True),
+    StructField("agency_id", IntegerType(), True),
     StructField("address_type", StringType(), True),
     StructField("common_location", StringType(), True)
 ])
@@ -35,6 +35,10 @@ def run_spark_job(spark):
         .option("subscribe", "com.udacity.sf.crime.calls") \
         .option("startingOffset", "earliest") \
         .option("maxOffsetsPerTrigger", 200) \
+        .option("maxRatePerPartition", 1000) \
+        .option("spark.default.parallelism", 6) \
+        .option("spark.sql.shuffle.partitions", 2) \
+        .option("stopGracefullyOnShutdown", "true") \
         .load()
 
     # Show schema for the incoming resources for checks
@@ -50,12 +54,13 @@ def run_spark_job(spark):
 
     # TODO select original_crime_type_name and disposition
     distinct_table = service_table \
-                    .select("original_crime_type_name", "disposition") \
+                    .select("original_crime_type_name", "disposition",  "call_date_time") \
                     .distinct()
 
     # count the number of original crime type
     agg_df = distinct_table \
-            .select("original_crime_type_name") \
+            .select("original_crime_type_name", "call_date_time") \
+            .withWatermark("call_date_time", "60 minutes") \
             .groupBy("original_crime_type_name") \
             .agg({"original_crime_type_name": "count"})
     
@@ -64,9 +69,9 @@ def run_spark_job(spark):
     query = agg_df \
             .writeStream \
             .format("console") \
-            .outputMode("complete") \
+            .outputMode("update") \
+            .trigger(processingTime="30 seconds") \
             .start()
-
     # TODO attach a ProgressReporter
     query.awaitTermination()
 
@@ -83,7 +88,6 @@ def run_spark_job(spark):
     # TODO join on disposition column
     join_query = agg_df.join(radio_code_df, "disposition", "left")
 
-
     join_query.awaitTermination()
 
 
@@ -95,9 +99,10 @@ if __name__ == "__main__":
         .builder \
         .master("local[*]") \
         .appName("KafkaSparkStructuredStreaming") \
+        .config("spark.ui.port", 3000) \
         .getOrCreate()
         
-    spark.sparkContext.setLogLevel("ERROR")
+    # spark.sparkContext.setLogLevel("ERROR")
 
     logger.info("Spark started")
 
