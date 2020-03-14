@@ -8,7 +8,7 @@ I measured the performance based on inputRowsPerSecond and processedRowsPerSecon
 
 I found that increasing the `parallelism` will decrease the latency, but it doesn't have to much impact on the throughput.
 
-![parallelism](./pictures/parallelism.png)
+![parallelism](./pictures/parallelism.PNG)
 
 # What were the 2-3 most efficient SparkSession property key/value pairs? Through testing multiple variations on values, how can you tell these were the most optimal?
 
