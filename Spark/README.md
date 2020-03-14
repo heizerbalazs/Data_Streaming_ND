@@ -21,4 +21,4 @@ Based on my experiments, I used the following parameters:
 
 `"spark.default.parallelism": 6`
 
-`"spark.sql.shuffle.partitions": 2`
+`"spark.sql.shuffle.partitions": 4`
